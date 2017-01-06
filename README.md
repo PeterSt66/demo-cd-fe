@@ -42,6 +42,10 @@ This project contains a Docker buildfile but it's not build-enabled.
 ## Correlation ID's
 To demo correlation ID's this application accepts, logs and retransmits CID's. The partner backend, Demo-be, will accept the CID's and also log them as part of the log context.
 
-# Obfuscate left
-- Jenkinsfile
-- Dockerfile
+## Jenkins and Openshift
+The Jenkinsfile (should be used from a multi-branch job) will build the code, package it and construct a Docker container.
+Next it will try to deploy the app to Openshift, in one of two ways:
+
+- Clean deploy - delete any existing deployment and rebuild and redeploy. If the branch != master the build will wait for confirmation (look in Jenkins) and proceeds to delete all. This mimics a setup for a popup instance, usefull for api- and integration testing through curl / soapui / other tooling
+
+- Upgrade existing deployment - only done if it's the master branch and a deployment exists. It will do a rolling update. To force a rebuild delete the deployment config from openshift (not the running deployment, the config)
