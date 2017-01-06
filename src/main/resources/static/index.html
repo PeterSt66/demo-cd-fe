@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+<link rel="stylesheet"
+	href="./bower_components/bootstrap/dist/css/bootstrap.min.css" />
+
+<title>Example application</title>
+
+<style>
+html {
+	position: relative;
+	min-height: 100%;
+}
+
+body {
+	/* Margin bottom by footer height */
+	margin-bottom: 60px;
+}
+
+.footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	/* Set the fixed height of the footer here */
+	height: 40px;
+	background-color: #f5f5f5;
+}
+
+.breadcrumb>li+li::before {
+	content: '\21E8';
+	color: blue;
+}
+
+.highlight {
+	color: #6e0469;
+	font-weight: 600;
+}
+</style>
+</head>
+
+<body ng-app="myApp">
+	<div class="container" ng-controller="AppController">
+
+
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<h2>Demo application</h2>
+				</div>
+				<div class="pull-right">
+					<a class="btn btn-default navbar-btn" href="/info/html"> <span
+						class="glyphicon glyphicon-download" aria-hidden="true"></span>&nbsp;<small>raw</small>
+					</a>
+					<button type="button" class="btn btn-default navbar-btn"
+						ng-click="refresh()">
+						<span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>&nbsp;<small>refresh</small>
+					</button>
+					<button type="button" class="btn btn-default navbar-btn"
+						onclick="window.location.reload()">
+						<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>&nbsp;<small>reload</small>
+					</button>
+					<a class="btn btn-default navbar-btn dropdown-toggle href="
+						#" data-toggle="dropdown" role="button" aria-haspopup="true"
+						aria-expanded="false"> <span class="glyphicon glyphicon-cog"
+						aria-hidden="true"></span>&nbsp;<small>admin</small> <span
+						class="caret"></span>
+					</a>
+					<ul class="dropdown-menu">
+						<li><a href="lc/stop/BE">Stop Backend</a></li>
+						<li><a href="lc/stop/FE">Stop Frontend</a></li>
+						<li><a href="lc/stop/ALL">Stop both</a></li>
+						<li role="separator" class="divider"></li>
+						<li>
+							<form class="navbar-form">
+								<div class="form-group">
+									<input type="text" class="form-control"
+										placeholder="backend hostname" ng-model="backendHostname">
+								</div>
+								<button type="submit" class="btn btn-default"
+									ng-click="changeBackend()">
+									<span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span>
+								</button>
+							</form>
+						<li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+
+		<ol class="breadcrumb">
+			<li><span class="glyphicon glyphicon-user" aria-hidden="true"></span></li>
+			<li>Frontend {{info.fe.system.Hostname}}</li>
+			<li>Service {{info.be.system.Hostname}}</li>
+		</ol>
+
+		<div ng-if="info.be.exception"
+			class="alert alert-warning alert-dismissible" role="alert">
+			<button type="button" class="close" data-dismiss="alert"
+				aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			<strong>Backend down</strong><br />
+			<small>{{info.be.exception}}</small>
+		</div>
+
+		<div class="row">
+			<!-- Quotorama -->
+			<div class="col-md-12">
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						<h3 class="panel-title">Quotes from space</h3>
+					</div>
+					<div class="panel-body">
+						<p>
+							<b>{{info.fe.quote[1]}}</b>: {{info.fe.quote[2]}}
+						</p>
+						<p>
+							<b>{{info.be.quote[1]}}</b>: {{info.be.quote[2]}}
+						</p>
+						<p>
+							<small>(served on {{info.fe.system.request_ts}})</small>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- row -->
+
+		<div class="row">
+
+			<!-- Running container -->
+			<div class="col-md-6">
+
+				<!-- Running container - System info -->
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							<b>Container info</b>
+						</h3>
+					</div>
+					<table class="table">
+						<tr>
+							<td>Role
+							<td><b>{{info.fe.labels.APPROLE}}
+									<td><b>{{info.be.labels.APPROLE}}
+						</tr>
+						<tr>
+							<td>Hostname
+							<td>{{info.fe.system.Hostname}}
+							<td>{{info.be.system.Hostname}}
+						</tr>
+						<tr>
+							<td>Java JDK
+							<td class="highlight">{{info.fe.system.java_runtime_version}}
+							<td class="highlight">{{info.be.system.java_runtime_version}}
+						</tr>
+						<tr>
+							<td>OS
+							<td>{{info.fe.system.os_name}} {{info.fe.system.os_arch}}<br />
+							<small>{{info.fe.system.os_version}}
+									<td>{{info.be.system.os_name}} {{info.be.system.os_arch}}<br />
+									<small>{{info.be.system.os_version}} 
+						</tr>
+					</table>
+					<div class="panel-footer">
+						<small>(System info from within the running container)</small>
+					</div>
+				</div>
+
+				<!-- Running container - Net info -->
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							<b>Network info</b>
+						</h3>
+					</div>
+					<table class="table">
+						<tr ng-repeat="adr in info.fe.net">
+							<td><b>fe</b>.{{adr.displayname}}
+							<td><b>{{adr.address1}}</b><br />
+							<i>{{adr.address0}}</i>
+						</tr>
+						<tr ng-repeat="adr in info.be.net">
+							<td><b>be</b>.{{adr.displayname}}
+							<td><b>{{adr.address1}}</b><br />
+							<i>{{adr.address0}}</i>
+						</tr>
+					</table>
+					<div class="panel-footer">
+						<small>(Net info from within the running container)</small>
+					</div>
+				</div>
+
+			</div>
+			<!-- container-->
+
+			<!-- CD build info -->
+			<div class="col-md-6">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<h3 class="panel-title">
+							<b>Build info</b>
+						</h3>
+					</div>
+					<table class="table">
+						<tr>
+							<td>Role
+							<td><b>{{info.fe.labels.APPROLE}}
+									<td><b>{{info.be.labels.APPROLE}}
+						</tr>
+						<tr>
+							<td>Git branch
+							<td>{{info.fe.labels.FEATURE}}
+							<td>{{info.be.labels.FEATURE}}
+						</tr>
+						<tr>
+							<td>Build <abbr title="Start moment of the build">time</abbr>
+							<td>{{info.fe.labels.BUILD_TS}}
+							<td>{{info.be.labels.BUILD_TS}}
+						</tr>
+						<tr>
+							<td>Java <abbr
+								title="This version was used to compile the sourcecode into classes">version</abbr>
+							<td>{{info.fe.labels.JAVA_BUILD_VERSION}}
+							<td>{{info.be.labels.JAVA_BUILD_VERSION}}
+						</tr>
+						<!-- <tr><td>Jenkins builder<td>{{info.fe.labels.BUILD_ON}}<td>{{info.be.labels.BUILD_ON}}</tr> -->
+						<tr>
+							<td>Job name
+							<td>{{info.fe.labels.BUILD_TAG}}
+							<td>{{info.be.labels.BUILD_TAG}}
+						</tr>
+						<!-- <tr><td>Jenkins version<td>{{info.fe.labels.JENKINS_VERSION}}<td>{{info.be.labels.JENKINS_VERSION}}</tr> -->
+					</table>
+					<div class="panel-footer">
+						<small>(Build info gathered during CD build)</small>
+					</div>
+				</div>
+			</div>
+			<!-- CD info -->
+
+		</div>
+		<!-- row -->
+
+		<footer class="footer">
+			<div class="container">
+				<p class="text-muted">Continuous delivery demo
+					application.</p>
+			</div>
+		</footer>
+
+	</div>
+
+	<script type="text/javascript"
+		src="./bower_components/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript"
+		src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script type="text/javascript"
+		src="./bower_components/angular/angular.min.js"></script>
+	<script type="text/javascript"
+		src="./bower_components/angular-resource/angular-resource.min.js"></script>
+	<!-- script type="text/javascript" src="./bower_components/lodash/dist/lodash.min.js"></script -->
+	<script type="text/javascript" src="./app/app.js"></script>
+	<script type="text/javascript" src="./app/controllers.js"></script>
+	<script type="text/javascript" src="./app/services.js"></script>
+
+</body>
+
+</html>

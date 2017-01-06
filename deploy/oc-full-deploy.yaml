@@ -1,0 +1,115 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: @ProjectIdGoesHere@-is-@LowcaseFeatureNameGoesHere@
+    labels:
+      app: @ProjectIdGoesHere@
+      region: primary
+    spec:
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: @DockerImageRepoGoesHere@/demo-fe:@VersionTagGoesHere@
+      importPolicy: 
+        scheduled: true
+      name: master
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: @ProjectIdGoesHere@-@LowcaseFeatureNameGoesHere@
+      run: @ProjectIdGoesHere@-@LowcaseFeatureNameGoesHere@
+    name: @ProjectIdGoesHere@-@LowcaseFeatureNameGoesHere@
+  spec:
+    replicas: 1
+    selector:
+      run: @ProjectIdGoesHere@-@LowcaseFeatureNameGoesHere@
+    strategy:
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 120
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          run: @ProjectIdGoesHere@-@LowcaseFeatureNameGoesHere@
+          partof: @ProjectIdGoesHere@-@LowcaseFeatureNameGoesHere@
+      spec:
+        containers:
+        - image: @DockerImageRepoGoesHere@/@ProjectIdGoesHere@:@VersionTagGoesHere@
+          imagePullPolicy: Always
+          name: @ProjectIdGoesHere@-pod-@LowcaseFeatureNameGoesHere@
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          ports:
+            -
+              name: http-port-app
+              containerPort: 8080
+          resources:
+            limits:
+              cpu: 1500m
+              memory: 512Mi
+            requests:
+              cpu: 400m
+              memory: 512Mi
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 6
+            timeoutSeconds: 1
+            periodSeconds: 3
+            successThreshold: 1
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /lc/ping
+              port: 8080
+            initialDelaySeconds: 5
+            timeoutSeconds: 2
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 5
+          lifecycle:
+            preStop:
+              httpGet:
+                path: "/lc/stop/FE"
+                port: 8080
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: @ProjectIdGoesHere@-service-@LowcaseFeatureNameGoesHere@
+    labels:
+      app: @ProjectIdGoesHere@-@LowcaseFeatureNameGoesHere@
+    annotations:
+      service.alpha.openshift.io/dependencies: '[{"name":"demo-be-service-master","namespace":"","kind":"Service"}]'
+  spec:
+    ports:
+      - port: 8080
+        targetPort: 8080
+    selector:
+       run: @ProjectIdGoesHere@-@LowcaseFeatureNameGoesHere@
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+    name: @ProjectIdGoesHere@-route-@LowcaseFeatureNameGoesHere@
+    labels:
+      app: @ProjectIdGoesHere@-fe-@LowcaseFeatureNameGoesHere@
+  spec:
+    host: demo-@LowcaseFeatureNameGoesHere@.@ClusterBaseNameGoesHere@
+    port:
+      targetPort: 8080
+    to:
+      kind: Service
+      name: @ProjectIdGoesHere@-service-@LowcaseFeatureNameGoesHere@
+      weight: 100
+kind: List
+metadata: {}
+
