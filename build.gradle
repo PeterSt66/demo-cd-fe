@@ -1,9 +1,4 @@
 
-group = 'demo.cd'
-version = '1.0.0'
-
-description = 'demo-cd-fe'
-
 buildscript {
     ext {
         javaVersion = 1.8
@@ -20,6 +15,15 @@ buildscript {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
     }
 }
+plugins {
+    id 'com.craigburke.client-dependencies' version '1.3.1'
+}
+
+group = 'demo.cd'
+version = '1.0.0'
+
+description = 'demo-cd-fe'
+
 
 apply plugin: 'maven'
 apply plugin: 'java'
@@ -53,17 +57,21 @@ dependencies {
     }
 }
 
-buildscript {
-	repositories {
-        mavenCentral() 
-	}
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.2.RELEASE")
-    }
-}
-
 apply plugin: 'org.springframework.boot'
 apply plugin: 'checkstyle'
+
+processResources.dependsOn('clientInstall')   // should be clientRefresh but that is too costly
+clean.dependsOn('clientClean')
+
+clientDependencies {
+    installDir =  'src/main/resources/static/assets'
+    copyExcludes = ['**/Gruntfile.js', 'gulpfile.js', 'source/**']
+    bower {
+		'angular'('~1.5.0')
+		'angular-resource'('~1.5.0')
+		'bootstrap'('~3.3.7', from:'dist')
+    }
+}
 
 springBoot {
     executable = true

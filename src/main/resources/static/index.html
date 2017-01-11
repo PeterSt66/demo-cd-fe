@@ -6,8 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-<link rel="stylesheet"
-	href="./bower_components/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="./assets/bootstrap/css/bootstrap.css" />
+<link rel="stylesheet" href="./assets/angular/angular-csp.css" />
 
 <title>Example application</title>
 
@@ -64,8 +64,7 @@ body {
 						onclick="window.location.reload()">
 						<span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>&nbsp;<small>reload</small>
 					</button>
-					<a class="btn btn-default navbar-btn dropdown-toggle href="
-						#" data-toggle="dropdown" role="button" aria-haspopup="true"
+					<a class="btn btn-default navbar-btn dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true"
 						aria-expanded="false"> <span class="glyphicon glyphicon-cog"
 						aria-hidden="true"></span>&nbsp;<small>admin</small> <span
 						class="caret"></span>
@@ -92,13 +91,13 @@ body {
 			</div>
 		</nav>
 
-		<ol class="breadcrumb">
+		<ol class="breadcrumb" ng-cloak>
 			<li><span class="glyphicon glyphicon-user" aria-hidden="true"></span></li>
 			<li>Frontend {{info.fe.system.Hostname}}</li>
 			<li>Service {{info.be.system.Hostname}}</li>
 		</ol>
 
-		<div ng-if="info.be.exception"
+		<div ng-if="info.be.exception" 
 			class="alert alert-warning alert-dismissible" role="alert">
 			<button type="button" class="close" data-dismiss="alert"
 				aria-label="Close">
@@ -108,7 +107,7 @@ body {
 			<small>{{info.be.exception}}</small>
 		</div>
 
-		<div class="row">
+		<div class="row"  ng-cloak>
 			<!-- Quotorama -->
 			<div class="col-md-12">
 				<div class="panel panel-success">
@@ -134,7 +133,7 @@ body {
 		<div class="row">
 
 			<!-- Running container -->
-			<div class="col-md-6">
+			<div class="col-md-6" ng-cloak>
 
 				<!-- Running container - System info -->
 				<div class="panel panel-success">
@@ -146,8 +145,8 @@ body {
 					<table class="table">
 						<tr>
 							<td>Role
-							<td><b>{{info.fe.labels.APPROLE}}
-									<td><b>{{info.be.labels.APPROLE}}
+							<td><b>{{info.fe.labels.APPROLE}}</b>
+							<td><b>{{info.be.labels.APPROLE}}</b> 
 						</tr>
 						<tr>
 							<td>Hostname
@@ -162,9 +161,9 @@ body {
 						<tr>
 							<td>OS
 							<td>{{info.fe.system.os_name}} {{info.fe.system.os_arch}}<br />
-							<small>{{info.fe.system.os_version}}
-									<td>{{info.be.system.os_name}} {{info.be.system.os_arch}}<br />
-									<small>{{info.be.system.os_version}} 
+								<small>{{info.fe.system.os_version}}
+							<td>{{info.be.system.os_name}} {{info.be.system.os_arch}}<br />
+								<small>{{info.be.system.os_version}} 
 						</tr>
 					</table>
 					<div class="panel-footer">
@@ -200,7 +199,7 @@ body {
 			<!-- container-->
 
 			<!-- CD build info -->
-			<div class="col-md-6">
+			<div class="col-md-6" ng-cloak>
 				<div class="panel panel-info">
 					<div class="panel-heading">
 						<h3 class="panel-title">
@@ -210,8 +209,8 @@ body {
 					<table class="table">
 						<tr>
 							<td>Role
-							<td><b>{{info.fe.labels.APPROLE}}
-									<td><b>{{info.be.labels.APPROLE}}
+							<td><b>{{info.fe.labels.APPROLE}}</b>
+							<td><b>{{info.be.labels.APPROLE}}</b>
 						</tr>
 						<tr>
 							<td>Git branch
@@ -249,22 +248,17 @@ body {
 
 		<footer class="footer">
 			<div class="container">
-				<p class="text-muted">Continuous delivery demo
-					application.</p>
+				<p class="text-muted">Continuous delivery demo application.</p>
 			</div>
 		</footer>
 
 	</div>
 
-	<script type="text/javascript"
-		src="./bower_components/jquery/dist/jquery.min.js"></script>
-	<script type="text/javascript"
-		src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-	<script type="text/javascript"
-		src="./bower_components/angular/angular.min.js"></script>
-	<script type="text/javascript"
-		src="./bower_components/angular-resource/angular-resource.min.js"></script>
-	<!-- script type="text/javascript" src="./bower_components/lodash/dist/lodash.min.js"></script -->
+	<script type="text/javascript" src="./assets/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="./assets/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="./assets/angular/angular.min.js"></script>
+	<script type="text/javascript" src="./assets/angular-resource/angular-resource.min.js"></script>
+	<!-- script type="text/javascript" src="./assets/lodash/dist/lodash.min.js"></script -->
 	<script type="text/javascript" src="./app/app.js"></script>
 	<script type="text/javascript" src="./app/controllers.js"></script>
 	<script type="text/javascript" src="./app/services.js"></script>

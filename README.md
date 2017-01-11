@@ -1,12 +1,13 @@
 # Demo application for CD - Frontend
 This example can be used as a demonstration application for Continuous Delivery in a container environment.
+Based on ng-spring-boot (https://github.com/g00glen00b/ng-spring-boot)
 
 ## Frameworks
 
 ### Front-end
 
 #### Twitter Bootstrap
-For rapidly creating prototypes of a web application, a UI toolkit or library will become really handy. There are many choices available, and for this example I chose Twitter Bootstrap.
+For rapidly creating prototypes of a web application, a UI toolkit or library will become really handy. For this demo Twitter Bootstrap is choosen.
 
 #### AngularJS
 AngularJS is a MVC based framework for web applications, written in JavaScript. It makes it possible to use the Model-View-Controller pattern on the front-end. 
