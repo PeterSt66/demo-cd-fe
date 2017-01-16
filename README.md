@@ -25,7 +25,7 @@ bower install
 
 Then you can run Gradle to package the application:
 ```
-mvn clean bootRepackage
+gradle clean bootRepackage
 ```
 
 Now you can run the Java application quite easily:
