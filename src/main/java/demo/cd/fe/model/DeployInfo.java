@@ -18,9 +18,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j
 public class DeployInfo {
-    private static final Logger LOG = LoggerFactory.getLogger(DeployInfo.class);
     private static SimpleDateFormat BASIC_DATE_FMT = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss.SSS");
 
     public CompletableFuture<Map<String, Object>> getData() {
@@ -70,7 +72,7 @@ public class DeployInfo {
                 netinfo.add(ni);
             }
         } catch (Exception e) {
-            LOG.error("Cannot enumerate network interfaces: " + e);
+            log.error("Cannot enumerate network interfaces: " + e);
         }
 
         final Properties labels = new Properties();
@@ -79,7 +81,7 @@ public class DeployInfo {
                 labels.load(stream);
             }
         } catch (Exception e) {
-            LOG.error("Cannot load labels: " + e);
+            log.error("Cannot load labels: " + e);
         }
 
         res.put("labels", labels);

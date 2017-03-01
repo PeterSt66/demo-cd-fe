@@ -22,10 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/info")
 @Slf4j
 public class InfoController {
-    // private static final Logger LOG =
-    // LoggerFactory.getLogger(InfoController.class);
     private static final int SLEEP_BEFORE_KILL = 1500;
-    // private static final int HTTP_OK = 200;
     private static final int HTTP_REDIRECT = 302;
     private static final String HTTP_HDR_LOC = "location";
 

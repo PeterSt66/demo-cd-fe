@@ -50,3 +50,5 @@ Next it will try to deploy the app to Openshift, in one of two ways:
 - Clean deploy - delete any existing deployment and rebuild and redeploy. If the branch != master the build will wait for confirmation (look in Jenkins) and proceeds to delete all. This mimics a setup for a popup instance, usefull for api- and integration testing through curl / soapui / other tooling
 
 - Upgrade existing deployment - only done if it's the master branch and a deployment exists. It will do a rolling update. To force a rebuild delete the deployment config from openshift (not the running deployment, the config)
+
+- Jenkins build depend on the OC binary to be available as /usr/bin/oc

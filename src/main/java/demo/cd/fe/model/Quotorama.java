@@ -1,5 +1,4 @@
 package demo.cd.fe.model;
-//Resources.toString(MyClass.getResource("foo.txt"), Charsets.UTF_8)
 
 import java.io.BufferedReader;
 import java.io.IOException;

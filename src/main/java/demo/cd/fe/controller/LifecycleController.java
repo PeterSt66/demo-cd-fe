@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import demo.cd.fe.service.InfoService;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/lc")
+@Slf4j
 public class LifecycleController {
-    private static final Logger LOG = LoggerFactory.getLogger(LifecycleController.class);
     private static final int SLEEP_BEFORE_KILL = 1500;
     private static final int HTTP_OK = 200;
     private static final int HTTP_REDIRECT = 302;
@@ -30,7 +31,7 @@ public class LifecycleController {
 
     @RequestMapping(value = "/ping", method = RequestMethod.GET)
     public String ping(HttpServletResponse resp) throws Exception {
-        LOG.trace("ping!");
+        log.trace("ping!");
         resp.setStatus(HTTP_OK);
         return "OK";
     }
@@ -38,7 +39,7 @@ public class LifecycleController {
     @RequestMapping(value = "/stop", method = RequestMethod.GET)
     public void stopThis(HttpServletResponse resp) throws Exception {
 
-        LOG.error("Received stop signal - exploding in 1.5 secs");
+        log.error("Received stop signal - exploding in 1.5 secs");
         new WaitBeforeKill().start();
 
         redirectToIndex(resp);
@@ -46,21 +47,21 @@ public class LifecycleController {
 
     @RequestMapping(value = "/stopBE", method = RequestMethod.GET)
     public void stopBackend(HttpServletResponse resp) throws Exception {
-        LOG.warn("Received stop signal for backend - fire one!");
+        log.warn("Received stop signal for backend - fire one!");
 
         infoService.killBackend();
 
         try {
             Thread.sleep(SLEEP_BEFORE_KILL);
         } catch (Throwable e) {
-            LOG.warn("stopBackend: Could not sleep: " + e, e);
+            log.warn("stopBackend: Could not sleep: " + e, e);
         }
         redirectToIndex(resp);
     }
 
     @RequestMapping(value = "/backend", method = RequestMethod.POST)
     public String changeBackend(@RequestBody Map<String, String> params, HttpServletResponse resp) throws Exception {
-        LOG.warn("Changing backend with " + params);
+        log.warn("Changing backend with " + params);
         String newName = params == null ? null : params.get("newBackend");
         infoService.changeBackend(newName);
         resp.setStatus(HTTP_OK);
@@ -74,7 +75,7 @@ public class LifecycleController {
 
     @RequestMapping(value = "/stop/{id}", method = RequestMethod.GET)
     public void stopSpecific(HttpServletResponse resp, @PathVariable("id") String id) throws Exception {
-        LOG.info("accepted a signal to stop for " + id + ", let's find us a target....");
+        log.info("accepted a signal to stop for " + id + ", let's find us a target....");
         switch (id) {
         case "FE": {
             stopThis(resp);
@@ -101,7 +102,7 @@ public class LifecycleController {
                 Thread.sleep(SLEEP_BEFORE_KILL);
                 System.exit(0);
             } catch (Throwable e) {
-                LOG.warn("Kill FE: Could not sleep: " + e, e);
+                log.warn("Kill FE: Could not sleep: " + e, e);
             }
         }
     }

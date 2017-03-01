@@ -16,9 +16,11 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
+@Slf4j
 public class CidFilter implements Filter {
-    private final static Logger LOG = LoggerFactory.getLogger(CidFilter.class);
     private final static String CID = "cid";
     private final static String BCID = "bcid";
 
@@ -53,13 +55,13 @@ public class CidFilter implements Filter {
             MDC.put(BCID, requestCid);
         }
         MDC.put(CID, cid);
-        LOG.info("Incoming {} request for endpoint {} with data of type {} and length {}", request.getMethod(),
+        log.info("Incoming {} request for endpoint {} with data of type {} and length {}", request.getMethod(),
                 request.getRequestURL(), request.getContentType(), request.getContentLength());
 
         try {
             chain.doFilter(req, res);
         } finally {
-            LOG.info("Done:  {} request for endpoint {} returns data of type {}", request.getMethod(), request.getRequestURL(),
+            log.info("Done:  {} request for endpoint {} returns data of type {}", request.getMethod(), request.getRequestURL(),
                     res.getContentType());
             MDC.remove(CID);
             MDC.remove(BCID);

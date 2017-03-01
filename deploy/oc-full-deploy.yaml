@@ -7,7 +7,7 @@ items:
     labels:
       app: @ProjectIdGoesHere@
       region: primary
-    spec:
+  spec:
     tags:
     - annotations: null
       from:

@@ -4,7 +4,7 @@ def ocMaster =  env.OC_MASTER
 def remoteDocker = env.DOCKER_REPO 
 def clusterBaseName = env.CLUSTER_DNS_BASE 
 
-def ocNamespace = "cd-demo"
+def ocNamespace = "demo-cd"
 
 def isMaster = 'master'.equalsIgnoreCase(env.BRANCH_NAME)
 def featureId = featureFromBranch(env.BRANCH_NAME)
@@ -41,13 +41,12 @@ timestamps {
     env.PATH = "${tool 'Maven3'}/bin:${env.PATH}"
 
     checkout scm
-    sh 'ls -lh'
 
     updateGitlabCommitStatus name: 'build', state: 'pending'
 
     gitlabCommitStatus("build") {
       sh './gradlew clean'
-      dir('src/main/resources/static/bower_components') {
+      dir('src/main/resources/static/assets') {
           deleteDir()
       }
       dir('docker') {
@@ -69,7 +68,9 @@ timestamps {
         "BUILD_TS=${now}\n"
       writeFile text: labels, file: "src/main/resources/labels.properties"
 
-      sh 'bower --allow-root install'
+      // Bower replaced with client-dependencies plugin in Gradle 
+      // sh 'bower --allow-root install'
+      
       sh './gradlew build && cp build/libs/fe*.jar docker'
 
       stash name: "deployDir", includes: "deploy/*"
@@ -101,7 +102,8 @@ timestamps {
 
   stage ('Clean Openshift') {
    if (fullDeploy) {
-       echo "Cleaning openshift for deployment ${instanceId}"
+       // Always clean feature branches and clean master if no master DeploymentConfig is found
+        echo "Cleaning openshift for deployment ${instanceId}"
        destroyInstance(instanceId)
     } // if
     echo "done cleaning openshift for deployment ${instanceId}"
@@ -134,11 +136,12 @@ timestamps {
       def verbose = 'true'
 
       if (!fullDeploy) {
-        echo "Deploying master which is deployed, only kick its current deployment"
+        echo "Master is already deployed, only kick its current deployment"
         deployLatest(instanceId)
         callOpenshift("label -f ${deployThisYaml} belongsTo=${instanceId} --overwrite=true")
       }
       else {
+        echo "Full deployment of all components of ${instanceId}"
         // full deploy when it's not the master
         // Get the OC deployment yaml config	
         unstash name: "deployConfig"
