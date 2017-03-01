@@ -1,0 +1,96 @@
+apiVersion: v1
+items:
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    name: @ProjectIdGoesHere@-@VersionTagGoesHere@
+    namespace: @NamespaceGoesHere@
+  spec:
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          app: @ProjectIdGoesHere@-@VersionTagGoesHere@
+      spec:
+        imagePullSecrets:
+        - name: docker-repo-4407-login
+        containers:
+        - image: @DockerImageRepoGoesHere@/@ProjectIdGoesHere@:@VersionTagGoesHere@
+          name: @ProjectIdGoesHere@-pod-@VersionTagGoesHere@
+          imagePullPolicy: Always
+          env:
+          - name: DEMO_BE_SERVICE_MASTER_SERVICE_HOST
+            value: "demo-be-svc-master.@NamespaceGoesHere@.svc.cluster.local"
+          - name: DEMO_BE_SERVICE_MASTER_SERVICE_PORT
+            value: "8081"
+          lifecycle:
+            preStop:
+              httpGet:
+                path: /lc/stop/FE
+                port: 8080
+                scheme: HTTP
+          livenessProbe:
+            failureThreshold: 5
+            initialDelaySeconds: 6
+            periodSeconds: 3
+            successThreshold: 1
+            tcpSocket:
+              port: 8080
+            timeoutSeconds: 1
+          ports:
+          - containerPort: 8080
+            name: http-port-app
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /lc/ping
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 2
+          resources:
+            limits:
+              cpu: 1500m
+              memory: 512Mi
+            requests:
+              cpu: 400m
+              memory: 512Mi
+          terminationMessagePath: /dev/termination-log
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 10
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+        app: @ProjectIdGoesHere@-svc-@VersionTagGoesHere@
+    name: @ProjectIdGoesHere@-svc-@VersionTagGoesHere@
+    namespace: @NamespaceGoesHere@
+  spec:
+    ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: @ProjectIdGoesHere@-@VersionTagGoesHere@
+    sessionAffinity: None
+    type: NodePort
+- apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    name: @ProjectIdGoesHere@-ingress-@VersionTagGoesHere@
+    namespace: @NamespaceGoesHere@
+  spec:
+    rules:
+    - http:
+        paths:
+        - path: /
+          backend:
+            serviceName: @ProjectIdGoesHere@-svc-@VersionTagGoesHere@
+            servicePort: 8080
+kind: List
+metadata: {}
+resourceVersion: ""
+selfLink: ""

@@ -41,7 +41,7 @@ public class InfoService {
         port = env.get("DEMO_BE_SERVICE_MASTER_SERVICE_PORT");
 
         // use direct dns name of service, removes linkage to IP which can change
-        host = "demo-be-service-master";
+        host = "demo-be-svc-master";
         port = port == null ? "8081" : port;
     }
 

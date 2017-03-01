@@ -1,9 +1,6 @@
 package demo.cd.fe.model;
 
 import org.junit.Test;
-
-import demo.cd.fe.model.Quotorama;
-
 import static org.junit.Assert.*;
 
 public class QuotoramaTest {

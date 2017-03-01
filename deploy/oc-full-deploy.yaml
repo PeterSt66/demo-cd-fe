@@ -3,30 +3,32 @@ items:
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: @ProjectIdGoesHere@-is-@LowcaseFeatureNameGoesHere@
+    name: @ProjectIdGoesHere@-is-@VersionTagGoesHere@
+    namespace: @NamespaceGoesHere@
     labels:
-      app: @ProjectIdGoesHere@
+      app: @ProjectIdGoesHere@-@VersionTagGoesHere@
       region: primary
-  spec:
+    spec:
     tags:
     - annotations: null
       from:
         kind: DockerImage
-        name: @DockerImageRepoGoesHere@/demo-fe:@VersionTagGoesHere@
-      importPolicy: 
+        name: @DockerImageRepoGoesHere@/@ProjectIdGoesHere@:@VersionTagGoesHere@
+      importPolicy:
         scheduled: true
       name: master
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
     labels:
-      app: @ProjectIdGoesHere@-@LowcaseFeatureNameGoesHere@
-      run: @ProjectIdGoesHere@-@LowcaseFeatureNameGoesHere@
-    name: @ProjectIdGoesHere@-@LowcaseFeatureNameGoesHere@
+      app: @ProjectIdGoesHere@-@VersionTagGoesHere@
+      run: @ProjectIdGoesHere@-@VersionTagGoesHere@
+    name: @ProjectIdGoesHere@-@VersionTagGoesHere@
+    namespace: @NamespaceGoesHere@
   spec:
     replicas: 1
     selector:
-      run: @ProjectIdGoesHere@-@LowcaseFeatureNameGoesHere@
+      run: @ProjectIdGoesHere@-@VersionTagGoesHere@
     strategy:
       resources: {}
       rollingParams:
@@ -39,13 +41,13 @@ items:
     template:
       metadata:
         labels:
-          run: @ProjectIdGoesHere@-@LowcaseFeatureNameGoesHere@
-          partof: @ProjectIdGoesHere@-@LowcaseFeatureNameGoesHere@
+          run: @ProjectIdGoesHere@-@VersionTagGoesHere@
+          partof: @ProjectIdGoesHere@-@VersionTagGoesHere@
       spec:
         containers:
         - image: @DockerImageRepoGoesHere@/@ProjectIdGoesHere@:@VersionTagGoesHere@
           imagePullPolicy: Always
-          name: @ProjectIdGoesHere@-pod-@LowcaseFeatureNameGoesHere@
+          name: @ProjectIdGoesHere@-pod-@VersionTagGoesHere@
           resources: {}
           terminationMessagePath: /dev/termination-log
           ports:
@@ -62,20 +64,20 @@ items:
           livenessProbe:
             tcpSocket:
               port: 8080
-            initialDelaySeconds: 6
-            timeoutSeconds: 1
-            periodSeconds: 3
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+            periodSeconds: 4
             successThreshold: 1
-            failureThreshold: 5
+            failureThreshold: 10
           readinessProbe:
             httpGet:
               path: /lc/ping
               port: 8080
-            initialDelaySeconds: 5
-            timeoutSeconds: 2
+            initialDelaySeconds: 6
+            timeoutSeconds: 5
             periodSeconds: 30
             successThreshold: 1
-            failureThreshold: 5
+            failureThreshold: 10
           lifecycle:
             preStop:
               httpGet:
@@ -84,32 +86,35 @@ items:
 - apiVersion: v1
   kind: Service
   metadata:
-    name: @ProjectIdGoesHere@-service-@LowcaseFeatureNameGoesHere@
+    name: @ProjectIdGoesHere@-svc-@VersionTagGoesHere@
+    namespace: @NamespaceGoesHere@
     labels:
-      app: @ProjectIdGoesHere@-@LowcaseFeatureNameGoesHere@
+      app: @ProjectIdGoesHere@-@VersionTagGoesHere@
     annotations:
-      service.alpha.openshift.io/dependencies: '[{"name":"demo-be-service-master","namespace":"","kind":"Service"}]'
+      service.alpha.openshift.io/dependencies: '[{"name":"demo-be-svc-master","namespace":"@NamespaceGoesHere@","kind":"Service"}]'
   spec:
     ports:
       - port: 8080
         targetPort: 8080
     selector:
-       run: @ProjectIdGoesHere@-@LowcaseFeatureNameGoesHere@
+       run: @ProjectIdGoesHere@-@VersionTagGoesHere@
 - apiVersion: v1
   kind: Route
   metadata:
     annotations:
-    name: @ProjectIdGoesHere@-route-@LowcaseFeatureNameGoesHere@
+    name: @ProjectIdGoesHere@-route-@VersionTagGoesHere@
+    namespace: @NamespaceGoesHere@
     labels:
-      app: @ProjectIdGoesHere@-fe-@LowcaseFeatureNameGoesHere@
+      app: @ProjectIdGoesHere@-@VersionTagGoesHere@
   spec:
-    host: demo-@LowcaseFeatureNameGoesHere@.@ClusterBaseNameGoesHere@
+    host: demo-@VersionTagGoesHere@.@ClusterBaseNameGoesHere@
     port:
       targetPort: 8080
     to:
       kind: Service
-      name: @ProjectIdGoesHere@-service-@LowcaseFeatureNameGoesHere@
+      name: @ProjectIdGoesHere@-svc-@VersionTagGoesHere@
       weight: 100
 kind: List
 metadata: {}
+
 

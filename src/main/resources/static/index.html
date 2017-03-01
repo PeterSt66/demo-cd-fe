@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-<link rel="stylesheet" href="./assets/bootstrap/css/bootstrap.css" />
+<link rel="stylesheet" href="./assets/bootstrap/dist/css/bootstrap.css"/>
 <link rel="stylesheet" href="./assets/angular/angular-csp.css" />
 
 <title>Example application</title>
@@ -107,14 +107,14 @@ body {
 			<small>{{info.be.exception}}</small>
 		</div>
 
-		<div class="row"  ng-cloak>
+		<div class="row">
 			<!-- Quotorama -->
 			<div class="col-md-12">
 				<div class="panel panel-success">
 					<div class="panel-heading">
 						<h3 class="panel-title">Quotes from space</h3>
 					</div>
-					<div class="panel-body">
+					<div class="panel-body" ng-cloak>
 						<p>
 							<b>{{info.fe.quote[1]}}</b>: {{info.fe.quote[2]}}
 						</p>
@@ -133,7 +133,7 @@ body {
 		<div class="row">
 
 			<!-- Running container -->
-			<div class="col-md-6" ng-cloak>
+			<div class="col-md-6">
 
 				<!-- Running container - System info -->
 				<div class="panel panel-success">
@@ -142,7 +142,7 @@ body {
 							<b>Container info</b>
 						</h3>
 					</div>
-					<table class="table">
+					<table class="table" ng-cloak>
 						<tr>
 							<td>Role
 							<td><b>{{info.fe.labels.APPROLE}}</b>
@@ -157,6 +157,11 @@ body {
 							<td>Java JDK
 							<td class="highlight">{{info.fe.system.java_runtime_version}}
 							<td class="highlight">{{info.be.system.java_runtime_version}}
+						</tr>
+						<tr>
+							<td>Working dir
+							<td>{{info.fe.system.workdir}}
+							<td>{{info.be.system.workdir}}
 						</tr>
 						<tr>
 							<td>OS
@@ -178,7 +183,7 @@ body {
 							<b>Network info</b>
 						</h3>
 					</div>
-					<table class="table">
+					<table class="table" ng-cloak>
 						<tr ng-repeat="adr in info.fe.net">
 							<td><b>fe</b>.{{adr.displayname}}
 							<td><b>{{adr.address1}}</b><br />
@@ -199,14 +204,14 @@ body {
 			<!-- container-->
 
 			<!-- CD build info -->
-			<div class="col-md-6" ng-cloak>
+			<div class="col-md-6">
 				<div class="panel panel-info">
 					<div class="panel-heading">
 						<h3 class="panel-title">
 							<b>Build info</b>
 						</h3>
 					</div>
-					<table class="table">
+					<table class="table" ng-cloak>
 						<tr>
 							<td>Role
 							<td><b>{{info.fe.labels.APPROLE}}</b>
@@ -254,8 +259,8 @@ body {
 
 	</div>
 
-	<script type="text/javascript" src="./assets/jquery/jquery.min.js"></script>
-	<script type="text/javascript" src="./assets/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="./assets/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="./assets/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="./assets/angular/angular.min.js"></script>
 	<script type="text/javascript" src="./assets/angular-resource/angular-resource.min.js"></script>
 	<!-- script type="text/javascript" src="./assets/lodash/dist/lodash.min.js"></script -->
@@ -266,3 +271,4 @@ body {
 </body>
 
 </html>
+
